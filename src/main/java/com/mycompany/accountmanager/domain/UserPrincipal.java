@@ -1,6 +1,8 @@
 package com.mycompany.accountmanager.domain;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -11,25 +13,27 @@ import java.util.stream.Collectors;
 import static java.util.Arrays.stream;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class UserPrincipal implements UserDetails {
 
-    private User user;
+    private UserEntity userEntity;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return stream(this.user.getAuthorities())
+        return stream(this.userEntity.getAuthorities())
                 .map(SimpleGrantedAuthority::new)
                 .collect(Collectors.toList());
     }
 
     @Override
     public String getPassword() {
-        return this.user.getPassword();
+        return this.userEntity.getPassword();
     }
 
     @Override
     public String getUsername() {
-        return this.user.getUsername();
+        return this.userEntity.getUsername();
     }
 
     @Override
@@ -39,7 +43,7 @@ public class UserPrincipal implements UserDetails {
 
     @Override
     public boolean isAccountNonLocked() {
-        return this.user.isNotLocked();
+        return this.userEntity.isNotLocked();
     }
 
     @Override
@@ -49,7 +53,7 @@ public class UserPrincipal implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return this.user.isActive();
+        return this.userEntity.isActive();
     }
 
 }
