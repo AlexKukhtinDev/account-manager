@@ -6,6 +6,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.http.HttpStatus;
 
+import java.time.Instant;
+
 @Data
 @Builder
 @AllArgsConstructor
@@ -18,4 +20,7 @@ public class HttpResponse {
     private String message;
     private String path;
 
+    //interesting facts, when worked with this functionality
+    @Builder.Default
+    private long timestamp = Instant.now().toEpochMilli();
 }
