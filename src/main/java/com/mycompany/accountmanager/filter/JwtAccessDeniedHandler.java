@@ -3,32 +3,34 @@ package com.mycompany.accountmanager.filter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mycompany.accountmanager.constant.SecurityConstant;
 import com.mycompany.accountmanager.domain.HttpResponse;
-import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.web.authentication.Http403ForbiddenEntryPoint;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.stereotype.Component;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.OutputStream;
 
 import static org.springframework.http.HttpStatus.FORBIDDEN;
+import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @Component
-public class JwtAuthenticationEntryPoint extends Http403ForbiddenEntryPoint {
+public class JwtAccessDeniedHandler implements AccessDeniedHandler {
 
     @Override
-    public void commence(
+    public void handle(
             HttpServletRequest request,
             HttpServletResponse response,
-            AuthenticationException authenticationException) throws IOException {
+            AccessDeniedException accessDeniedException) throws IOException, ServletException {
         HttpResponse httpResponse = HttpResponse
                 .builder()
-                .httpStatus(FORBIDDEN)
-                .httpStatusCode(FORBIDDEN.value())
-                .reason(FORBIDDEN.getReasonPhrase())
-                .message(SecurityConstant.FORBIDDEN_MESSAGE)
+                .httpStatus(UNAUTHORIZED)
+                .httpStatusCode(UNAUTHORIZED.value())
+                .reason(UNAUTHORIZED.getReasonPhrase())
+                .message(SecurityConstant.ACCESS_DENIED_MESSAGE)
                 .path(request.getContextPath())
                 .build();
 
